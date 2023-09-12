@@ -20,7 +20,11 @@ class ApiController extends Controller
                 return $this->responseMessage('error', $validate->errors()->all()[0], 400);
             }
             $user = User::create(['name' => $request->name]);
-            return $this->responseMessage('success', 'user created successfully ', 200, $user);
+            // return $this->responseMessage('success', 'user created successfully ', 201, $user);
+            return response()->json([
+                'message' => 'new user saved successfully',
+                'data' => $user
+            ], 201, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         } catch (\Throwable $th) {
             return $this->responseMessage('error', $th->getMessage(), 500);
         }
