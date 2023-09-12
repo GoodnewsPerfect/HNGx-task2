@@ -111,3 +111,7 @@ The API uses JSON for both requests and responses. The following table describes
 ## Remove a user (204 No Content)
 
 <img src="images/delete.png" alt="remove a user" />
+
+## Fetch users (200 OK)
+
+<img src="images/viewAll.png" alt="fetch all users" />
