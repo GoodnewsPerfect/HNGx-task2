@@ -15,9 +15,14 @@ class ApiController extends Controller
     public function store(Request $request)
     {
         try {
-            $validate = $this->validateRequest($request);
+            $validate = Validator::make($request->only('name'), [
+                'name' => 'string|required'
+            ]);
             if ($validate->fails()) {
-                return $this->responseMessage('error', $validate->errors()->all()[0], 400);
+                // return $this->responseMessage('error', $validate->errors()->all()[0], 400);
+                return response()->json([
+                    'message' => $validate->messages()
+            ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
             $user = User::create(['name' => $request->name]);
             // return $this->responseMessage('success', 'user created successfully ', 201, $user);
@@ -26,23 +31,34 @@ class ApiController extends Controller
                 'data' => $user
             ], 201, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         } catch (\Throwable $th) {
-            return $this->responseMessage('error', $th->getMessage(), 500);
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 500, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show($user_id)
     {
         try {
-            $user = User::where('id', '=', $request->user_id)->first();
+            $user = User::where('user_id', '=', $user_id)->first();
             if (!$user) {
-                return $this->responseMessage('error', 'no user found',  400);
+                // return $this->responseMessage('error', 'no user found',  400);
+                return response()->json([
+                    'message' => 'no user found'
+                ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
-            return $this->responseMessage('success', 'user data retrieved successfully ',  200, $user);
+            // return $this->responseMessage('success', 'user data retrieved successfully ',  200, $user);
+            return response()->json([
+                'data' => $user
+            ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         } catch (\Throwable $th) {
-            return $this->responseMessage('error', $th->getMessage(),  500);
+            // return $this->responseMessage('error', $th->getMessage(),  500);
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 500, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         }
     }
 

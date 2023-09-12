@@ -16,4 +16,5 @@ use App\Http\Controllers\ApiController; // Import the ApiController
 */
 
 Route::post('/', [ApiController::class, "store"]);
+Route::get('/{user_id}', [ApiController::class, "show"]);
 ?>
