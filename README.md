@@ -102,7 +102,7 @@ The API uses JSON for both requests and responses. The following table describes
 
 ## Fetch a user detail (200 OK)
 
-<img src="images/getg.png" alt="fetch a user" />
+<img src="images/get.png" alt="fetch a user" />
 
 ## Modify the details of an existing user (200 OK)
 
