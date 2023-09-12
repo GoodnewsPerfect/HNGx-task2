@@ -10,7 +10,6 @@ Welcome to the CRUD API documentation Laravel application. This API allows you t
 - [API Endpoints](#api-endpoints)
 - [Request and Response Formats](#request-and-response-formats)
 - [Sample Usage](#sample-usage)
-- [License](#license)
 
 ## Getting Started
 
@@ -103,7 +102,7 @@ The API uses JSON for both requests and responses. The following table describes
 
 ## Fetch a user detail (200 OK)
 
-<img src="images/read.png" alt="fetch a user" />
+<img src="images/getg.png" alt="fetch a user" />
 
 ## Modify the details of an existing user (200 OK)
 
@@ -112,7 +111,3 @@ The API uses JSON for both requests and responses. The following table describes
 ## Remove a user (204 No Content)
 
 <img src="images/delete.png" alt="remove a user" />
-
-### License
-
-The MIT License (MIT)
