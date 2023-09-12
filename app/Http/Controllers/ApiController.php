@@ -16,7 +16,7 @@ class ApiController extends Controller
     {
         try {
             $validate = Validator::make($request->only('name'), [
-                'name' => 'string|required'
+                'name' => 'string|required|unique:users' 
             ]);
             if ($validate->fails()) {
                 // return $this->responseMessage('error', $validate->errors()->all()[0], 400);
@@ -43,7 +43,7 @@ class ApiController extends Controller
     public function show($user_id)
     {
         try {
-            $user = User::where('user_id', '=', $user_id)->first();
+            $user = User::where('id', '=', $user_id)->first();
             if (!$user) {
                 // return $this->responseMessage('error', 'no user found',  400);
                 return response()->json([
@@ -66,63 +66,66 @@ class ApiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update($user_id, Request $request)
     {
         try {
-            $validate = $this->validateRequest($request);
-            if ($validate->fails()) {
-                return $this->responseMessage('error', $validate->errors()->all(),  400);
+            // $user = User::where('user_id', '=', $user_id)->first();
+            $user = User::find($user_id);
+            if (!$user) {
+                // return $this->responseMessage('error', 'no user found',  400);
+                return response()->json([
+                    'message' => 'no user found'
+                ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
-            return $this->updateUserDetails($request);
+            $name = $request->only('name');
+            $validate = Validator::make($name, [
+                'name' => 'string|required'
+            ]);
+            if ($validate->fails()) {
+                // return $this->responseMessage('error', $validate->errors()->all()[0], 400);
+                return response()->json([
+                    'message' => $validate->messages()
+            ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+            }
+            $user->update($name);
+            return response()->json([
+                'data' => $user
+            ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         } catch (\Throwable $th) {
-            return $this->responseMessage('error', $th->getMessage(),  500);
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 500, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($user_id)
     {
         try {
-            $user = User::where('id', '=', $request->user_id)->first();
+            // $user = User::where('id', '=', $request->user_id)->first();
+            $user = User::find($user_id);
             if (!$user) {
-                return $this->responseMessage('error', 'This user is not found',  400);
+                return response()->json([
+                    'message' => 'no user found'
+                ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
             $user->delete();
-            return $this->responseMessage('success', 'your account was deleted successfully',  200);
-        } catch (\Throwable $th) {
-            return $this->responseMessage('error', $th->getMessage(),  500);
-        }
-    }
-
-
-    private function updateUserDetails($request)
-    {
-        $user = User::where('id', '=', $request->user_id)->first();
-        if (!$user) {
-            return $this->responseMessage('error', 'This user is not found ' . $request->old_name,  400);
-        }
-        $user->update(['name' => $request->name,]);
-        return $this->responseMessage('success', 'user name updated successfully ',  200);
-    }
-
-
-
-    private function validateRequest(Request $request)
-    {
-        return Validator::make($request->all(), ['name' => 'required|string|unique:users',]);
-    }
-
-    private function responseMessage($status, $message, $status_code, $data = null)
-    {
-        if ($data == null) {
-            return response()->json(['status' => $status, 'message' =>  $message, 'status_code' => $status_code]);
-        } else {
             return response()->json([
-                'status' => $status, 'data' => $data, 'message' =>  $message,
-                'status_code' => $status_code
-            ]);
+                'message' => "User deleted successfully"
+        ], 204, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 500, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         }
+    }
+
+    public function viewAll() {
+        $users = User::all();
+        return response()->json([
+            'data' => $users
+        ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
     }
 }
