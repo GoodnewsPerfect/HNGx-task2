@@ -19,13 +19,11 @@ class ApiController extends Controller
                 'name' => 'string|required|unique:users' 
             ]);
             if ($validate->fails()) {
-                // return $this->responseMessage('error', $validate->errors()->all()[0], 400);
                 return response()->json([
                     'message' => $validate->messages()
             ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
             $user = User::create(['name' => $request->name]);
-            // return $this->responseMessage('success', 'user created successfully ', 201, $user);
             return response()->json([
                 'message' => 'new user saved successfully',
                 'data' => $user
@@ -45,17 +43,14 @@ class ApiController extends Controller
         try {
             $user = User::where('id', '=', $user_id)->first();
             if (!$user) {
-                // return $this->responseMessage('error', 'no user found',  400);
                 return response()->json([
                     'message' => 'no user found'
                 ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
-            // return $this->responseMessage('success', 'user data retrieved successfully ',  200, $user);
             return response()->json([
                 'data' => $user
             ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         } catch (\Throwable $th) {
-            // return $this->responseMessage('error', $th->getMessage(),  500);
             return response()->json([
                 'message' => $th->getMessage()
             ], 500, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
@@ -69,10 +64,8 @@ class ApiController extends Controller
     public function update($user_id, Request $request)
     {
         try {
-            // $user = User::where('user_id', '=', $user_id)->first();
             $user = User::find($user_id);
             if (!$user) {
-                // return $this->responseMessage('error', 'no user found',  400);
                 return response()->json([
                     'message' => 'no user found'
                 ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
@@ -82,7 +75,6 @@ class ApiController extends Controller
                 'name' => 'string|required'
             ]);
             if ($validate->fails()) {
-                // return $this->responseMessage('error', $validate->errors()->all()[0], 400);
                 return response()->json([
                     'message' => $validate->messages()
             ], 200, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
@@ -104,7 +96,6 @@ class ApiController extends Controller
     public function destroy($user_id)
     {
         try {
-            // $user = User::where('id', '=', $request->user_id)->first();
             $user = User::find($user_id);
             if (!$user) {
                 return response()->json([
@@ -121,6 +112,10 @@ class ApiController extends Controller
             ], 500, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
         }
     }
+
+     /**
+     * Show All from storage.
+     */
 
     public function viewAll() {
         $users = User::all();
